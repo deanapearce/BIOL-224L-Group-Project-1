@@ -1,9 +1,17 @@
-a1 = 0; % value<1 % probability of infection for strain 1
-a2 = 0; % value<1 % probability of infection for strain 2
-b1 = 0; % value<1 % probability of recovery for strain 1
-b2 = 0; % value<1 % probability of recovery for strain 2
-t_intr = 0; % time of introduction of new strain
-t_end = 0; % time of end of simulation
-d = 1; % timescale dilator
-n = 100; % size of population
-sir_model
+% step/resolution 
+step = 0.1; 
+ 
+% start/end of a2 parameter 
+a2_start = 0.1; 
+a2_end = 0.3; 
+ 
+% start/end of b2 parameter 
+b2_start = 0.1; 
+b2_end = 0.3; 
+ 
+for i = a2_start:step:a2_end 
+    for j= b2_start:step:b2_end 
+        disp(i); 
+        disp(j); 
+    end 
+end 
