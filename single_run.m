@@ -6,3 +6,4 @@ t_intr = 0; % time of introduction of new strain
 t_end = 0; % time of end of simulation
 d = 1; % timescale dilator
 n = 100; % size of population
+sir_model
