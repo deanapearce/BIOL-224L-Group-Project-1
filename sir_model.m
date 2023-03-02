@@ -3,30 +3,58 @@ t = 0:d:t_end;
 % Number of total time points
 n_t = floor(t_end / d);
 
-% Create Susceptible pool, set value at time 0 to N - 1
-S = zeros(1, n_t);
-S(1,1) = n - 1;
+% timestep index at which to introduce strain 2
+i_intr = ceil(t_intr / d);
 
-% Create Infected 1 pool, set value at time 0 to 1
-I1 = zeros(1, n_t);
-I1(1,1) = 1;
+% Matrix representing state:
+% S:  99 ...
+% I1: 1 ...
+% I2: 0 ... 1 ...
+% R:  0 ...
+M = zeros(4, n_t);
 
-% Create Infected 2 pool, set value at time at introduction to 1
-I2 = zeros(1, n_t);
-I1(1, (floor(t_intr / d))) = 1;
+% Set first Susceptible value at time 1 to N - 1
+M(1,1) = n - 1;
 
-% Create Removed pool, value is 0 at first time step
-R = zeros(1, n_t);
+% Set Infected 1 value at time 0 to 1
+M(2,1) = 1;
 
-for i=1:n_t;
-    S(1, i+1) = S(1, i) - d * S(1, i) / n * (a1*I1(1,i) + a2*I2(1,i))
-    I1(1, i+1) = I1(1, i) + d * (a1*S(1, i) * I1(1, i) / n - b1 * I1(1, i))
-    % TODO: strain 1 logic
-    if t > t_intr
-        I2(1, i+1) = I2(1, i) + d * (a2*S(1, i) * I2(1, i) / n - b2 * I2(1, i))
-        % TODO: strain 2 logic
+% Dummmy a2
+d_a2 = a2*(1-a1);
+
+for i=1:(n_t-1);
+    % Introduce Strain 2 by taking out of Susceptible
+    if i == i_intr
+        M(3, i) = 1;
+        M(1, i) = M(1, i) - 1;
     end
-    R(1, i+1) = R(1, i+1) + d* (b1 * I1(1, i) + b2 * I2(1, i))
+    % Susceptible
+    M(1, i+1) = M(1, i) - d * M(1, i) / n * (a1*M(2,i) + a2*M(3,i));
+    % Strain 1
+    M(2, i+1) = M(2, i) + d * (a1*M(1, i)* M(2, i) / n - b1 * M(2, i));
+
+    % After Strain 2 is introduced...
+    if i >= i_intr            
+        M(3, i+1) = M(3, i) + d * (a2*M(1, i)* M(3, i)/n - b2*M(3, i));
+    end    
+    % Removed
+    M(4, i+1) = M(4, i) + d * (b1 * M(2, i) + b2 * M(3, i));
 end
 
-plot(I1);
+%% Figure
+figure
+subplot(2,2,1);
+plot(M(1, :))
+title("Susceptible")
+
+subplot(2,2,2);
+plot(M(2, :))
+title("Infection 1")
+
+subplot(2,2,4);
+plot(M(3, :))
+title("Infection 2")
+
+subplot(2,2,3);
+plot(M(4, :))
+title("Removed")
