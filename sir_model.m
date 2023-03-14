@@ -41,20 +41,29 @@ for i=1:(n_t-1);
     M(4, i+1) = M(4, i) + d * (b1 * M(2, i) + b2 * M(3, i));
 end
 
+% first location where more people in I2 than I1
+ans = find(M(3, :) > M(2, :),1) * d;
+
+if isvector(ans)
+    if isempty(ans)
+        ans = t_end * 1.5;
+    end
+end
+
 %% Figure
-figure
-subplot(2,2,1);
-plot(M(1, :))
-title("Susceptible")
-
-subplot(2,2,2);
-plot(M(2, :))
-title("Infection 1")
-
-subplot(2,2,4);
-plot(M(3, :))
-title("Infection 2")
-
-subplot(2,2,3);
-plot(M(4, :))
-title("Removed")
+% figure
+% subplot(2,2,1);
+% plot(M(1, :))
+% title("Susceptible")
+% 
+% subplot(2,2,2);
+% plot(M(2, :))
+% title("Infection 1")
+% 
+% subplot(2,2,4);
+% plot(M(3, :))
+% title("Infection 2")
+% 
+% subplot(2,2,3);
+% plot(M(4, :))
+% title("Removed")
