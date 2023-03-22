@@ -1,21 +1,28 @@
 % This program calls sir_model on all units of the parameter space
 %% Initial parameters
-a1 = 0.5;       % 0<value<1 % probability of infection for strain 1
-a2_start = 0.5; % 0<value<1 % probability of infection for strain 2
-b1 = 0.3;       % 0<value<1 % probability of recovery for strain 1
-b2_start = 0.2; % 0<value<1 % probability of recovery for strain 2
-t_intr = 10;    % time of introduction of new strain
-t_end = 100;    % time of end of simulation
-d = 0.1;          % timescale dilator
-n = 100;        % size of population
+a1 = 0.294;       % 0<value<1 % probability of infection for strain 1
+b1 = 0.143;       % 0<value<1 % probability of recovery for strain 1
+%a1 = 0.14;       % 0<value<1 % probability of infection for strain 1
+%b1 = 0.105;       % 0<value<1 % probability of recovery for strain 1
+
+a2_start = 0; % 0<value<1 % probability of infection for strain 2
+a2_end = 1; 
+b2_start = 0; % 0<value<1 % probability of recovery for strain 2
+b2_end = 1; 
+
+t_intr = 100;    % time of introduction of new strain
+t_end = 1000;    % time of end of simulation
+d = 1;          % timescale dilator
+n = 300000000;        % size of population
 
 %% More parameters & loop
 % step/resolution 
-step = 0.01; 
+step = 0.1; 
 
-% end of a2, b2 parameter 
-a2_end = 0.8; 
-b2_end = 0.5; 
+% display figure every time? no, never do this.
+fig = 0;
+
+%% loop
 
 % list to traverse
 a2_list = a2_start:step:a2_end
@@ -45,4 +52,6 @@ heatmap(response, 'Colormap', spring, ...
     "YDisplayLabels", a2_list)
 xlabel("b2")
 ylabel("a2")
-title(strcat("Time to Strain 2 Dominance Against Strain 1 (a1=", string(a1), ", b1=", string(b1), ")"))
+title({strcat("Time to Dominance Against Strain 1 (a1=", string(a1), ", b1=", string(b1), ")"), ...
+    strcat("(Introduced after ", string(t_intr), " days)")})
+
